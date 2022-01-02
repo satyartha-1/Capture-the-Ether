@@ -7,6 +7,19 @@ contract GuessTheRandomNumberChallenge {
         require(msg.value == 1 ether);
         answer = uint8(keccak256(block.blockhash(block.number - 1), now));
     }
+
+    function isComplete() public view returns (bool) {
+        return address(this).balance == 0;
+    }
+
+    function guess(uint8 n) public payable {
+        require(msg.value == 1 ether);
+
+        if (n == answer) {
+            msg.sender.transfer(2 ether);
+        }
+    }
+    
 /* 
 in this challenge we need to find the block number and now value to calculate the hash. Here the block number is the one in which the current transaction is included.
 We find the block number by searching our tx hash on etherscan i.e 0x2a6c25466ede5bcb22db483ac906d473efbfdbd8c5026afe236b8bf5a146d61c.
@@ -21,17 +34,6 @@ The data types of data is very important as it changes the calculated hash. _has
 
 Finally we convert the calculated answer2 to uint8 to match with data type of answer.
 */
-    function isComplete() public view returns (bool) {
-        return address(this).balance == 0;
-    }
-
-    function guess(uint8 n) public payable {
-        require(msg.value == 1 ether);
-
-        if (n == answer) {
-            msg.sender.transfer(2 ether);
-        }
-    }
     uint8 public answer2;
     bytes32 _hash = 0xb0f6737f883fcbaf70755e6aac32cfad53d2decc221e1d198c4381c355c61076;
     uint256 _now = 1640891294;
